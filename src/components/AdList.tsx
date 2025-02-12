@@ -3,6 +3,7 @@ import { getAds } from '../services/api';
 import { Ad, ServicesAd } from '../types/Ad';
 import AdCard from './Adcard';
 import FilterPopup from './FilterPopup';
+import AdPagination from './AdPagination';
 import { FaFilter, FaTh, FaBars, FaCoins } from 'react-icons/fa';
 import { filterTypes, serviceTypes } from '../constants/filterData';
 import Slider from 'rc-slider';
@@ -17,6 +18,8 @@ const AdList: React.FC = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [viewType, setViewType] = useState<'column' | 'grid'>('column');
   const [usePriceLimit, setUsePriceLimit] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [adsPerPage] = useState(5);
 
   useEffect(() => {
     getAds().then((data) => setAds([...data]));
@@ -60,6 +63,8 @@ const AdList: React.FC = () => {
     setShowFilter(false);
   };
 
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   const filteredAds = ads.filter((ad) => {
     return (
       ad.name.toLowerCase().includes(search.toLowerCase()) &&
@@ -69,6 +74,10 @@ const AdList: React.FC = () => {
       (!usePriceLimit || (priceRange.max ? ad.price <= Number(priceRange.max) : true))
     );
   });
+
+  const indexOfLastAd = currentPage * adsPerPage;
+  const indexOfFirstAd = indexOfLastAd - adsPerPage;
+  const currentAds = filteredAds.slice(indexOfFirstAd, indexOfLastAd);
 
   return (
     <div className="container mx-auto p-4 flex flex-col gap-4 justify-center" style={{ maxWidth: '1440px' }}>
@@ -158,7 +167,7 @@ const AdList: React.FC = () => {
         </div>
         <div className="w-full lg:w-3/4 flex">
           <ul className={`grid ${viewType === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-24 xl:gap-24' : 'grid-cols-1 gap-6'}`}>
-            {filteredAds.map((ad) => (
+            {currentAds.map((ad) => (
               <li key={ad.slug}>
                 <AdCard ad={ad} viewType={viewType} />
               </li>
@@ -166,6 +175,12 @@ const AdList: React.FC = () => {
           </ul>
         </div>
       </div>
+      <AdPagination
+        adsPerPage={adsPerPage}
+        totalAds={filteredAds.length}
+        paginate={paginate}
+        currentPage={currentPage}
+      />
       <FilterPopup
         isOpen={showFilter}
         onClose={() => setShowFilter(false)}
