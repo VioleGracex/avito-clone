@@ -7,6 +7,7 @@ export interface BaseAd {
   type: 'Недвижимость' | 'Авто' | 'Услуги';
   price: number;
   imageUrl?: string;
+  images?: string[]; // Up to 5 images
 }
 
 export interface RealEstateAd extends BaseAd {

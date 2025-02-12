@@ -4,7 +4,7 @@ import { FaSearch, FaUserAlt, FaBell } from 'react-icons/fa';
 
 const Header: React.FC = () => {
   return (
-    <header className="bg-white  text-azure shadow-md p-4">
+    <header className="bg-white  shadow-md p-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <Link to="/" className="text-[#4357ad] text-2xl font-bold">Avito-Clone</Link>
