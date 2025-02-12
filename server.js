@@ -13,7 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors()); // Enable CORS
 
-// In-memory storage for ads
+/* // In-memory storage for ads
 let items = [
   {
     id: 1,
@@ -40,7 +40,7 @@ let items = [
     mileage: 15000,
     price: 300000,
   }
-];
+]; */
 
 const makeCounter = () => {
   let count = items.length; // Start the counter from the length of existing items
@@ -86,8 +86,14 @@ app.post('/items', (req, res) => {
 
   const slug = slugify(name, { lower: true });
 
+  // Ensure ID is unique
+  const id = itemsIdCounter();
+  if (items.some(item => item.id === id)) {
+    return res.status(400).json({ error: 'ID already exists' });
+  }
+
   const item = {
-    id: itemsIdCounter(),
+    id,
     slug,
     name,
     description,

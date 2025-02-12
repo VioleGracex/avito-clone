@@ -16,7 +16,7 @@ const AdList: React.FC = () => {
   const [priceRange, setPriceRange] = useState({ min: '0', max: '10000' });
   const [showFilter, setShowFilter] = useState(false);
   const [viewType, setViewType] = useState<'column' | 'grid'>('column');
-  const [usePriceLimit, setUsePriceLimit] = useState(true);
+  const [usePriceLimit, setUsePriceLimit] = useState(false);
 
   useEffect(() => {
     getAds().then((data) => setAds([...data]));

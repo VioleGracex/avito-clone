@@ -54,33 +54,89 @@ const AdForm: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<Ad>(initialRealEstateAd);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
 
+  // Fetch ad data if editing an existing ad
   useEffect(() => {
     if (slug) {
-      getAdBySlug(slug).then((ad) => {
-        setFormData(ad);
-        setError(null);
-      });
+      getAdBySlug(slug)
+        .then((ad) => {
+          setFormData(ad);
+          setErrors({});
+        })
+        .catch(() => {
+          setErrors({ ...errors, fetch: 'Ошибка загрузки объявления' });
+        });
     }
   }, [slug]);
 
+  // Handle form field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
+    // Validate and prevent invalid values
+    switch (name) {
+      case 'price':
+      case 'area':
+      case 'rooms':
+      case 'year':
+      case 'mileage':
+      case 'experience':
+      case 'cost':
+        if (parseFloat(value) < 1) {
+          setErrors({ ...errors, [name]: 'Значение должно быть больше 0' });
+          return;
+        }
+        break;
+      case 'name':
+      case 'description':
+      case 'location':
+      case 'propertyType':
+      case 'brand':
+      case 'model':
+      case 'serviceType':
+        if (value.trim() === '') {
+          setErrors({ ...errors, [name]: 'Поле не должно быть пустым' });
+          return;
+        }
+        break;
+      default:
+        break;
+    }
+
     setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: null });
   };
 
+  // Handle image changes
   const handleImageChange = (images: string[]) => {
     setFormData({ ...formData, images });
   };
 
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (slug) {
-      updateAd(slug, formData).then(() => navigate('/list'));
+      // Update existing ad
+      updateAd(slug, formData)
+        .then(() => navigate('/list'))
+        .catch(() => {
+          setErrors({ ...errors, submit: 'Ошибка обновления объявления' });
+        });
     } else {
-      createAd(formData).then(() => navigate('/list'));
+      // Create new ad
+      createAd(formData)
+        .then(() => navigate('/list'))
+        .catch(() => {
+          setErrors({ ...errors, submit: 'Ошибка создания объявления' });
+        });
     }
+  };
+
+  // Reset form data when switching tabs
+  const handleTabChange = (index: number) => {
+    const types = [initialRealEstateAd, initialAutoAd, initialServicesAd];
+    setFormData(types[index]);
   };
 
   return (
@@ -93,12 +149,7 @@ const AdForm: React.FC = () => {
         <span>{slug ? 'Редактировать объявление' : 'Создать объявление'}</span>
       </nav>
       <h2 className="text-2xl font-bold mb-4">{slug ? 'Редактировать объявление' : 'Создать объявление'}</h2>
-      <Tab.Group
-        onChange={(index) => {
-          const types = [initialRealEstateAd, initialAutoAd, initialServicesAd];
-          setFormData(types[index]);
-        }}
-      >
+      <Tab.Group onChange={handleTabChange}>
         <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-4">
           <Tab
             className={({ selected }) =>
@@ -143,17 +194,17 @@ const AdForm: React.FC = () => {
         <Tab.Panels>
           <Tab.Panel>
             {formData.type === 'Недвижимость' && (
-              <RealEstateForm formData={formData as RealEstateAd} handleChange={handleChange} />
+              <RealEstateForm formData={formData as RealEstateAd} handleChange={handleChange} errors={errors} />
             )}
           </Tab.Panel>
           <Tab.Panel>
             {formData.type === 'Авто' && (
-              <AutoForm formData={formData as AutoAd} handleChange={handleChange} />
+              <AutoForm formData={formData as AutoAd} handleChange={handleChange} errors={errors} />
             )}
           </Tab.Panel>
           <Tab.Panel>
             {formData.type === 'Услуги' && (
-              <ServicesForm formData={formData as ServicesAd} handleChange={handleChange} />
+              <ServicesForm formData={formData as ServicesAd} handleChange={handleChange} errors={errors} />
             )}
           </Tab.Panel>
         </Tab.Panels>
@@ -169,6 +220,7 @@ const AdForm: React.FC = () => {
             required
             className="w-full p-2 border rounded-md"
           />
+          {errors.name && <p className="text-red-500">{errors.name}</p>}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Описание</label>
@@ -180,6 +232,7 @@ const AdForm: React.FC = () => {
             required
             className="w-full p-2 border rounded-md"
           />
+          {errors.description && <p className="text-red-500">{errors.description}</p>}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Местоположение</label>
@@ -191,6 +244,7 @@ const AdForm: React.FC = () => {
             required
             className="w-full p-2 border rounded-md"
           />
+          {errors.location && <p className="text-red-500">{errors.location}</p>}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Цена</label>
@@ -201,14 +255,18 @@ const AdForm: React.FC = () => {
             onChange={handleChange}
             required
             className="w-full p-2 border rounded-md"
+            pattern="^\d+(\.\d{1,2})?$"
           />
+          {errors.price && <p className="text-red-500">{errors.price}</p>}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Изображения</label>
           <ImageUpload images={formData.images || []} onImagesChange={handleImageChange} />
-          {error && <p className="text-red-500">{error}</p>}
         </div>
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md">Отправить</button>
+        {errors.submit && <p className="text-red-500">{errors.submit}</p>}
+        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md">
+          {slug ? 'Обновить объявление' : 'Создать объявление'}
+        </button>
       </form>
     </div>
   );

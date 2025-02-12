@@ -1,1 +1,4 @@
 @import "tailwindcss";
+.glow {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); /* Blue glow effect */
+  }
