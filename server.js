@@ -1,7 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const slugify = require('slugify');
-const cors = require('cors');
+import express from 'express';
+import bodyParser from 'body-parser';
+import slugify from 'slugify';
+import cors from 'cors';
 
 const ItemTypes = {
   REAL_ESTATE: 'Недвижимость',

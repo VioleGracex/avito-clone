@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAds } from '../services/api';
 import { Ad, ServicesAd } from '../types/Ad';
-import AdCard from './AdCard';
+import AdCard from './Adcard';
 import FilterPopup from './FilterPopup';
 import { FaFilter, FaTh, FaBars, FaCoins } from 'react-icons/fa';
 import { filterTypes, serviceTypes } from '../constants/filterData';
