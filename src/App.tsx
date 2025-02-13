@@ -1,23 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdList from './components/AdList';
-import AdDetail from './components/AdDetail';
+import AdPage from './pages/AdPage';
 import AdForm from './components/AdForm';
 import Header from './components/Header';
-import './App.css';
 
 const App: React.FC = () => {
   return (
     <Router>
-       <Header />
+      <Header />
       <div className="App mt-2">
         <Routes>
-       
           <Route path="/" element={<AdList />} />
           <Route path="/list" element={<AdList />} />
-          <Route path="/item/:slug" element={<AdDetail />} />
+          <Route path="/item/:id" element={<AdPage />} />
           <Route path="/form" element={<AdForm />} />
-          <Route path="/form/:slug" element={<AdForm />} />
+          <Route path="/form/:id" element={<AdForm />} />
         </Routes>
       </div>
     </Router>

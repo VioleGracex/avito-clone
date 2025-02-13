@@ -60,6 +60,19 @@ const AutoForm: React.FC<AutoFormProps> = ({ formData, handleChange, errors }) =
         />
         {errors.mileage && <p className="text-red-500">{errors.mileage}</p>}
       </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Стоимость</label>
+        <input
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded-md"
+          min="1"
+        />
+        {errors.price && <p className="text-red-500">{errors.price}</p>}
+      </div>
     </>
   );
 };

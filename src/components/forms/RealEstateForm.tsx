@@ -48,6 +48,19 @@ const RealEstateForm: React.FC<RealEstateFormProps> = ({ formData, handleChange,
         />
         {errors.rooms && <p className="text-red-500">{errors.rooms}</p>}
       </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Стоимость</label>
+        <input
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded-md"
+          min="1"
+        />
+        {errors.price && <p className="text-red-500">{errors.price}</p>}
+      </div>
     </>
   );
 };

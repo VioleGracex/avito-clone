@@ -8,8 +8,8 @@ export const getAds = async (): Promise<Ad[]> => {
   return response.data;
 };
 
-export const getAdBySlug = async (slug: string): Promise<Ad> => {
-  const response = await axios.get(`${API_URL}/items/${slug}`);
+export const getAdById = async (id: string): Promise<Ad> => {
+  const response = await axios.get(`${API_URL}/items/${id}`);
   return response.data;
 };
 
@@ -18,12 +18,12 @@ export const createAd = async (ad: Ad): Promise<Ad> => {
   return response.data;
 };
 
-export const updateAd = async (slug: string, ad: Ad): Promise<Ad> => {
-  const response = await axios.put(`${API_URL}/items/${slug}`, ad);
+export const updateAd = async (id: string, ad: Ad): Promise<Ad> => {
+  const response = await axios.put(`${API_URL}/items/${id}`, ad);
   return response.data;
 };
 
-export const deleteAd = async (slug: string): Promise<number> => {
-  const response = await axios.delete(`${API_URL}/items/${slug}`);
+export const deleteAd = async (id: string): Promise<number> => {
+  const response = await axios.delete(`${API_URL}/items/${id}`);
   return response.status;
 };

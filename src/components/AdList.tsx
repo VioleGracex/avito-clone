@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getAds } from '../services/api';
 import { Ad, ServicesAd } from '../types/Ad';
-import AdCard from './Adcard';
+import AdCard from './AdCard';
 import FilterPopup from './FilterPopup';
 import AdPagination from './AdPagination';
 import { FaFilter, FaTh, FaBars, FaCoins } from 'react-icons/fa';
@@ -165,14 +166,23 @@ const AdList: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="w-full lg:w-3/4 flex">
-          <ul className={`grid ${viewType === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-24 xl:gap-24' : 'grid-cols-1 gap-6'}`}>
-            {currentAds.map((ad) => (
-              <li key={ad.slug}>
-                <AdCard ad={ad} viewType={viewType} />
-              </li>
-            ))}
-          </ul>
+        <div className="w-full lg:w-3/4 flex flex-col items-center">
+          {currentAds.length > 0 ? (
+            <ul className={`grid ${viewType === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  xl:gap-4' : 'grid-cols-1 gap-6'}`}>
+              {currentAds.map((ad) => (
+                <li key={ad.id}>
+                  <AdCard ad={ad} viewType={viewType} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-center">
+              <p>Здесь пока нет объявлений. Будьте первым, кто воспользуется нашими услугами.</p>
+              <Link to="/form" className="mt-4 bg-blue-500 text-white p-2 rounded-md inline-block">
+                + Разместить объявление
+              </Link>
+            </div>
+          )}
         </div>
       </div>
       <AdPagination

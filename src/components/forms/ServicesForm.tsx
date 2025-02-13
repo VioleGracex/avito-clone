@@ -23,7 +23,7 @@ const ServicesForm: React.FC<ServicesFormProps> = ({ formData, handleChange, err
         {errors.serviceType && <p className="text-red-500">{errors.serviceType}</p>}
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700">Опыт</label>
+        <label className="block text-gray-700">Опыт (в годах)</label>
         <input
           type="number"
           name="experience"
@@ -47,6 +47,19 @@ const ServicesForm: React.FC<ServicesFormProps> = ({ formData, handleChange, err
           min="1"
         />
         {errors.cost && <p className="text-red-500">{errors.cost}</p>}
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700">Цена за услугу</label>
+        <input
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded-md"
+          min="1"
+        />
+        {errors.price && <p className="text-red-500">{errors.price}</p>}
       </div>
     </>
   );

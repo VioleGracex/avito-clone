@@ -30,7 +30,7 @@ const GridAdCard: React.FC<{ ad: Ad }> = ({ ad }) => {
   }, [ad.images, isHovered]);
 
   const handleClick = () => {
-    navigate(`/item/${ad.slug}`);
+    navigate(`/item/${ad.id}`);
   };
 
   const handleMouseEnter = () => {
@@ -123,7 +123,7 @@ const ColumnAdCard: React.FC<{ ad: Ad }> = ({ ad }) => {
   }, [ad.images, isHovered]);
 
   const handleClick = () => {
-    navigate(`/item/${ad.slug}`);
+    navigate(`/item/${ad.id}`);
   };
 
   const handleMouseEnter = () => {
