@@ -12,6 +12,7 @@ const AdPage: React.FC = () => {
   const navigate = useNavigate();
   const [ad, setAd] = useState<Ad | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAd = async () => {
@@ -26,6 +27,11 @@ const AdPage: React.FC = () => {
 
     fetchAd();
   }, [id]);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setCurrentUserId(userId);
+  }, []);
 
   const handleDelete = async () => {
     try {
@@ -48,20 +54,22 @@ const AdPage: React.FC = () => {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">{ad.name}</h1>
-        <div className="flex space-x-2">
-          <button
-            onClick={handleEdit}
-            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center hover:bg-blue-600 transition duration-300"
-          >
-            <FaEdit className="mr-2" /> Редактировать
-          </button>
-          <button
-            onClick={handleDelete}
-            className="bg-red-500 text-white px-4 py-2 rounded flex items-center hover:bg-red-600 transition duration-300"
-          >
-            <FaTrash className="mr-2" /> Удалить
-          </button>
-        </div>
+        {currentUserId === ad.userId && (
+          <div className="flex space-x-2">
+            <button
+              onClick={handleEdit}
+              className="bg-blue-500 text-white px-4 py-2 rounded flex items-center hover:bg-blue-600 transition duration-300"
+            >
+              <FaEdit className="mr-2" /> Редактировать
+            </button>
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 text-white px-4 py-2 rounded flex items-center hover:bg-red-600 transition duration-300"
+            >
+              <FaTrash className="mr-2" /> Удалить
+            </button>
+          </div>
+        )}
       </div>
       {ad.type === 'Недвижимость' && <RealEstateAdPage ad={ad as RealEstateAd} />}
       {ad.type === 'Авто' && <AutoAdPage ad={ad as AutoAd} />}

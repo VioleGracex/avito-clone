@@ -105,3 +105,18 @@ export const handleLogout = () => {
 
   window.location.href = "/";
 };
+
+export const getCurrentUserId = async (): Promise<string | null> => {
+  try {
+    // Fetch the current user ID from your authentication endpoint
+    const response = await fetch('/api/auth/current-user');
+    if (response.ok) {
+      const data = await response.json();
+      return data.userId;
+    }
+    return null;
+  } catch (error) {
+    console.error('Ошибка при получении текущего пользователя', error);
+    return null;
+  }
+};

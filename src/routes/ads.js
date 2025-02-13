@@ -45,6 +45,11 @@ router.post('/', (req, res) => {
     console.error(error);
     return res.status(400).json({ error });
   }
+  if (!userId) {
+    const error = 'Отсутствует обязательное поле: ID пользователя';
+    console.error(error);
+    return res.status(400).json({ error });
+  }
 
   // Validate user ID
   console.log(userId);
@@ -174,9 +179,17 @@ router.get('/:id', (req, res) => {
 
 // Update ad by id
 router.put('/:id', (req, res) => {
+  const { userId, ...updateData } = req.body;
+  if (!userId) {
+    return res.status(400).json({ error: 'Отсутствует ID пользователя' });
+  }
+
   const item = items.find(i => i.id === parseInt(req.params.id));
   if (item) {
-    Object.assign(item, req.body, { updatedAt: new Date() });
+    if (item.userId !== userId) {
+      return res.status(403).json({ error: 'Доступ запрещен' });
+    }
+    Object.assign(item, updateData, { updatedAt: new Date() });
     res.json(item);
   } else {
     const error = 'Объявление не найдено';
@@ -187,9 +200,17 @@ router.put('/:id', (req, res) => {
 
 // Delete ad by id
 router.delete('/:id', (req, res) => {
+  const { userId } = req.body;
+  if (!userId) {
+    return res.status(400).json({ error: 'Отсутствует ID пользователя' });
+  }
+
   const itemIndex = items.findIndex(i => i.id === parseInt(req.params.id));
   if (itemIndex !== -1) {
     const [deletedItem] = items.splice(itemIndex, 1);
+    if (deletedItem.userId !== userId) {
+      return res.status(403).json({ error: 'Доступ запрещен' });
+    }
     const user = users.find(u => u.id === deletedItem.userId);
     if (user) {
       user.adIds = user.adIds.filter(adId => adId !== deletedItem.id);
