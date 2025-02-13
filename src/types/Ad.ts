@@ -9,6 +9,7 @@ export interface BaseAd {
   images?: string[]; // Up to 5 images
   createdAt: Date;
   updatedAt: Date;
+  userId: string;  // Changed userId to string
 }
 
 export interface RealEstateAd extends BaseAd {
@@ -86,6 +87,7 @@ export const initialRealEstateAd: RealEstateAd = {
   smokingAllowed: false,
   createdAt: new Date(),
   updatedAt: new Date(),
+  userId: '',  // Changed userId to string
 };
 
 export const initialAutoAd: AutoAd = {
@@ -117,6 +119,7 @@ export const initialAutoAd: AutoAd = {
   exchange: false,
   createdAt: new Date(),
   updatedAt: new Date(),
+  userId: '',  // Changed userId to string
 };
 
 export const initialServicesAd: ServicesAd = {
@@ -131,4 +134,5 @@ export const initialServicesAd: ServicesAd = {
   cost: 0,
   createdAt: new Date(),
   updatedAt: new Date(),
+  userId: '',  // Changed userId to string
 };

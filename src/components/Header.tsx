@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch, FaUserAlt, FaBell } from 'react-icons/fa';
 import AuthPopup from './popups/AuthPopup';
 import { checkIfLoggedIn, handleLogout } from '../services/auth';
@@ -9,6 +9,9 @@ const Header: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
   const [authView, setAuthView] = useState<'register' | 'login' | 'forgotPassword'>('login');
+  const [intendedPath, setIntendedPath] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -18,6 +21,19 @@ const Header: React.FC = () => {
 
     checkLoginStatus();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -30,6 +46,7 @@ const Header: React.FC = () => {
   const handleLogoutClick = () => {
     handleLogout();
     setIsLoggedIn(false);
+    navigate('/');
   };
 
   const openAuthPopup = (view: 'register' | 'login' | 'forgotPassword') => {
@@ -44,7 +61,20 @@ const Header: React.FC = () => {
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
     setAuthPopupOpen(false);
-    window.location.reload(); // Refresh the page to update the header
+    if (intendedPath) {
+      navigate(intendedPath);
+      setIntendedPath(null);
+    } else {
+      window.location.reload(); // Refresh the page to update the header
+    }
+  };
+
+  const handleFormClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      setIntendedPath('/form');
+      openAuthPopup('login');
+    }
   };
 
   return (
@@ -56,7 +86,7 @@ const Header: React.FC = () => {
               Avito-Clone
             </Link>
             <nav className="hidden md:flex space-x-4">
-              <Link to="/form" className="text-gray-700 hover:text-[#4357ad] hover:underline">
+              <Link to="/form" onClick={handleFormClick} className="text-gray-700 hover:text-[#4357ad] hover:underline">
                 Создать объявление
               </Link>
               <Link to="/list" className="text-gray-700 hover:text-[#4357ad] hover:underline">
@@ -77,7 +107,7 @@ const Header: React.FC = () => {
               <FaBell />
             </Link>
             {isLoggedIn ? (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={toggleDropdown}
                   className="text-gray-700 hover:text-[#4357ad] flex items-center"
@@ -85,7 +115,7 @@ const Header: React.FC = () => {
                   <FaUserAlt className="cursor-pointer" />
                 </button>
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
                     <Link
                       to="/profile"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:underline cursor-pointer"
@@ -128,7 +158,7 @@ const Header: React.FC = () => {
           </div>
         </div>
         <nav className="container mx-auto mt-4 md:hidden flex justify-center space-x-4">
-          <Link to="/form" className="text-gray-700 hover:text-[#4357ad] hover:underline">
+          <Link to="/form" onClick={handleFormClick} className="text-gray-700 hover:text-[#4357ad] hover:underline">
             Создать объявление
           </Link>
           <Link to="/list" className="text-gray-700 hover:text-[#4357ad] hover:underline">

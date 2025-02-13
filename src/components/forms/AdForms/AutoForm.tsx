@@ -15,7 +15,7 @@ const AutoForm: React.FC<AutoFormProps> = ({ formData, handleChange, errors }) =
         <input
           type="text"
           name="brand"
-          value={formData.brand}
+          value={formData.brand || ''}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded-md"
@@ -27,7 +27,7 @@ const AutoForm: React.FC<AutoFormProps> = ({ formData, handleChange, errors }) =
         <input
           type="text"
           name="model"
-          value={formData.model}
+          value={formData.model || ''}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded-md"
@@ -39,7 +39,7 @@ const AutoForm: React.FC<AutoFormProps> = ({ formData, handleChange, errors }) =
         <input
           type="number"
           name="year"
-          value={formData.year}
+          value={formData.year || ''}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded-md"
@@ -53,7 +53,7 @@ const AutoForm: React.FC<AutoFormProps> = ({ formData, handleChange, errors }) =
         <input
           type="number"
           name="mileage"
-          value={formData.mileage}
+          value={formData.mileage || ''}
           onChange={handleChange}
           className="w-full p-2 border rounded-md"
           min="1"
@@ -65,7 +65,7 @@ const AutoForm: React.FC<AutoFormProps> = ({ formData, handleChange, errors }) =
         <input
           type="number"
           name="price"
-          value={formData.price}
+          value={formData.price || ''}
           onChange={handleChange}
           required
           className="w-full p-2 border rounded-md"

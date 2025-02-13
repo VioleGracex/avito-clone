@@ -12,7 +12,7 @@ const RealEstateAdPage: React.FC<RealEstateAdPageProps> = ({ ad }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   return (
-    <div className="container mx-auto p-4 flex flex-col lg:flex-row">
+    <div className="container mx-auto p-4 flex flex-col lg:flex-row gap-4">
       <div className="w-full lg:w-2/3">
         <ImageGallery images={ad.images || []} currentImageIndex={currentImageIndex} setCurrentImageIndex={setCurrentImageIndex} />
         <div className="text-2xl font-bold mb-4">{ad.name || 'Инфо отсутствует'}</div>
@@ -51,7 +51,7 @@ const RealEstateAdPage: React.FC<RealEstateAdPageProps> = ({ ad }) => {
         <h2 className="text-2xl font-bold mb-4">Расположение</h2>
         <p>{ad.location || 'Инфо отсутствует'}</p>
       </div>
-      <div className="w-full lg:w-1/3 lg:pl-4 lg:sticky lg:top-4">
+      <div className="w-full lg:w-1/3 lg:pl-4 mt-8 lg:mt-0 lg:sticky lg:top-4">
         <ContactPanel />
       </div>
     </div>

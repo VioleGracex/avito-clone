@@ -26,30 +26,31 @@ router.post('/', (req, res) => {
 
   // Validate common required fields
   if (!name) {
-    const error = 'Missing required field: name';
+    const error = 'Отсутствует обязательное поле: имя';
     console.error(error);
     return res.status(400).json({ error });
   }
   if (!description) {
-    const error = 'Missing required field: description';
+    const error = 'Отсутствует обязательное поле: описание';
     console.error(error);
     return res.status(400).json({ error });
   }
   if (!location) {
-    const error = 'Missing required field: location';
+    const error = 'Отсутствует обязательное поле: местоположение';
     console.error(error);
     return res.status(400).json({ error });
   }
   if (!type) {
-    const error = 'Missing required field: type';
+    const error = 'Отсутствует обязательное поле: тип';
     console.error(error);
     return res.status(400).json({ error });
   }
 
   // Validate user ID
+  console.log(userId);
   const user = users.find(u => u.id === userId);
   if (!user) {
-    const error = 'Invalid user ID';
+    const error = 'Неверный ID пользователя';
     console.error(error);
     return res.status(400).json({ error });
   }
@@ -57,72 +58,72 @@ router.post('/', (req, res) => {
   switch (type) {
     case ItemTypes.REAL_ESTATE:
       if (!rest.propertyType) {
-        const error = 'Missing required field for Real estate: propertyType';
+        const error = 'Отсутствует обязательное поле для недвижимости: тип недвижимости';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.area) {
-        const error = 'Missing required field for Real estate: area';
+        const error = 'Отсутствует обязательное поле для недвижимости: площадь';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.rooms) {
-        const error = 'Missing required field for Real estate: rooms';
+        const error = 'Отсутствует обязательное поле для недвижимости: количество комнат';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.price) {
-        const error = 'Missing required field for Real estate: price';
+        const error = 'Отсутствует обязательное поле для недвижимости: цена';
         console.error(error);
         return res.status(400).json({ error });
       }
       break;
     case ItemTypes.AUTO:
       if (!rest.brand) {
-        const error = 'Missing required field for Auto: brand';
+        const error = 'Отсутствует обязательное поле для авто: марка';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.model) {
-        const error = 'Missing required field for Auto: model';
+        const error = 'Отсутствует обязательное поле для авто: модель';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.year) {
-        const error = 'Missing required field for Auto: year';
+        const error = 'Отсутствует обязательное поле для авто: год';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.mileage) {
-        const error = 'Missing required field for Auto: mileage';
+        const error = 'Отсутствует обязательное поле для авто: пробег';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.price) {
-        const error = 'Missing required field for Auto: price';
+        const error = 'Отсутствует обязательное поле для авто: цена';
         console.error(error);
         return res.status(400).json({ error });
       }
       break;
     case ItemTypes.SERVICES:
       if (!rest.serviceType) {
-        const error = 'Missing required field for Services: serviceType';
+        const error = 'Отсутствует обязательное поле для услуг: тип услуги';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.experience) {
-        const error = 'Missing required field for Services: experience';
+        const error = 'Отсутствует обязательное поле для услуг: опыт';
         console.error(error);
         return res.status(400).json({ error });
       }
       if (!rest.cost) {
-        const error = 'Missing required field for Services: cost';
+        const error = 'Отсутствует обязательное поле для услуг: стоимость';
         console.error(error);
         return res.status(400).json({ error });
       }
       break;
     default:
-      const error = 'Invalid type';
+      const error = 'Неверный тип';
       console.error(error);
       return res.status(400).json({ error });
   }
@@ -132,7 +133,7 @@ router.post('/', (req, res) => {
   // Ensure ID is unique
   const id = itemsIdCounter();
   if (items.some(item => item.id === id)) {
-    const error = 'ID already exists';
+    const error = 'ID уже существует';
     console.error(error);
     return res.status(400).json({ error });
   }
@@ -165,7 +166,7 @@ router.get('/:id', (req, res) => {
   if (item) {
     res.json(item);
   } else {
-    const error = 'Item not found';
+    const error = 'Объявление не найдено';
     console.error(error);
     res.status(404).send(error);
   }
@@ -178,7 +179,7 @@ router.put('/:id', (req, res) => {
     Object.assign(item, req.body, { updatedAt: new Date() });
     res.json(item);
   } else {
-    const error = 'Item not found';
+    const error = 'Объявление не найдено';
     console.error(error);
     res.status(404).send(error);
   }
@@ -195,7 +196,7 @@ router.delete('/:id', (req, res) => {
     }
     res.status(204).send();
   } else {
-    const error = 'Item not found';
+    const error = 'Объявление не найдено';
     console.error(error);
     res.status(404).send(error);
   }

@@ -58,7 +58,7 @@ const ServicesAdPage: React.FC<ServicesAdPageProps> = ({ ad }) => {
           </div>
         </div>
       </div>
-      <div className="w-full lg:w-1/3 lg:sticky lg:top-4">
+      <div className="w-full lg:w-1/3 lg:sticky lg:top-4 mt-8 lg:mt-0">
         <ContactPanel />
       </div>
     </div>
