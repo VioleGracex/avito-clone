@@ -1,5 +1,5 @@
 import React from 'react';
-import { AutoAd } from '../../types/Ad';
+import { AutoAd } from '../../../types/Ad';
 
 interface AutoFormProps {
   formData: AutoAd;

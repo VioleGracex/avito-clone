@@ -1,5 +1,5 @@
 import React from 'react';
-import { ServicesAd } from '../../types/Ad';
+import { ServicesAd } from '../../../types/Ad';
 
 interface ServicesFormProps {
   formData: ServicesAd;

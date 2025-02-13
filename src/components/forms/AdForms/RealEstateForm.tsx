@@ -1,5 +1,5 @@
 import React from 'react';
-import { RealEstateAd } from '../../types/Ad';
+import { RealEstateAd } from '../../../types/Ad';
 
 interface RealEstateFormProps {
   formData: RealEstateAd;

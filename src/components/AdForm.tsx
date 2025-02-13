@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { createAd, updateAd, getAdById } from '../services/api';
 import { Ad, RealEstateAd, AutoAd, ServicesAd, initialRealEstateAd, initialAutoAd, initialServicesAd } from '../types/Ad';
-import RealEstateForm from './forms/RealEstateForm';
-import AutoForm from './forms/AutoForm';
-import ServicesForm from './forms/ServicesForm';
-import ImageUpload from './ImageUpload';
+import RealEstateForm from './forms/AdForms/RealEstateForm';
+import AutoForm from './forms/AdForms/AutoForm';
+import ServicesForm from './forms/AdForms/ServicesForm';
+import ImageUpload from '../components/ImageUpload';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import AuthPopup from './popups/AuthPopup';
+import { checkIfLoggedIn } from '../services/auth';
 
 const AdForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,9 +16,21 @@ const AdForm: React.FC = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<Ad | RealEstateAd | AutoAd | ServicesAd>(initialRealEstateAd);
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authPopupOpen, setAuthPopupOpen] = useState(true);
 
   useEffect(() => {
-    if (id) {
+    const checkLoginStatus = async () => {
+      const loggedIn = await checkIfLoggedIn();
+      setIsLoggedIn(loggedIn);
+      setAuthPopupOpen(!loggedIn);
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  useEffect(() => {
+    if (id && isLoggedIn) {
       getAdById(id)
         .then((ad) => {
           setFormData(ad);
@@ -28,17 +42,18 @@ const AdForm: React.FC = () => {
             fetch: 'Ошибка загрузки объявления',
           }));
         });
-    } else {
+    } else if (!id) {
       setFormData(initialRealEstateAd); // Set default initial state
     }
-  }, [id]);
+  }, [id, isLoggedIn]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
+      updatedAt: new Date(), // Update the updatedAt timestamp
     }));
 
     setErrors((prevErrors) => ({
@@ -74,6 +89,7 @@ const AdForm: React.FC = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       images,
+      updatedAt: new Date(), // Update the updatedAt timestamp
     }));
   };
 
@@ -138,6 +154,16 @@ const AdForm: React.FC = () => {
     }
   };
 
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setAuthPopupOpen(false);
+    window.location.reload(); // Refresh the page to update the header
+  };
+
+  if (!isLoggedIn && authPopupOpen) {
+    return <AuthPopup onClose={() => setAuthPopupOpen(false)} view="login" onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <div className="p-4 bg-white shadow-md rounded-md max-w-2xl mx-auto mt-15">
       <nav className="flex items-center space-x-2 text-gray-700 mb-4">
@@ -177,8 +203,7 @@ const AdForm: React.FC = () => {
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Описание</label>
-              <input
-                type="text"
+              <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}

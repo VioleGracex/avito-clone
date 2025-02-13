@@ -7,6 +7,8 @@ export interface BaseAd {
   price: number;
   imageUrl?: string;
   images?: string[]; // Up to 5 images
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface RealEstateAd extends BaseAd {
@@ -82,6 +84,8 @@ export const initialRealEstateAd: RealEstateAd = {
   childrenAllowed: false,
   petsAllowed: false,
   smokingAllowed: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 export const initialAutoAd: AutoAd = {
@@ -111,6 +115,8 @@ export const initialAutoAd: AutoAd = {
   steeringWheel: '',
   vin: '',
   exchange: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 export const initialServicesAd: ServicesAd = {
@@ -123,4 +129,6 @@ export const initialServicesAd: ServicesAd = {
   serviceType: '',
   experience: 0,
   cost: 0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };

@@ -23,7 +23,7 @@ export const updateAd = async (id: string, ad: Ad): Promise<Ad> => {
   return response.data;
 };
 
-export const deleteAd = async (id: string): Promise<number> => {
+export const deleteAdById = async (id: string): Promise<number> => {
   const response = await axios.delete(`${API_URL}/items/${id}`);
   return response.status;
 };
