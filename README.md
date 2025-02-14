@@ -1,50 +1,51 @@
-# React + TypeScript + Vite
+# Название проекта
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Обзор
+Этот проект представляет собой веб-приложение с фронтендом и бекендом. Фронтенд построен на React, а бекенд на Node.js. Приложение поддерживает запуск локально и с использованием Docker.
 
-Currently, two official plugins are available:
+## Предварительные требования
+- Node.js (>= 18.x)
+- npm (>= 10.x)
+- Docker (>= 20.x)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Структура проекта
+- `src/`: Содержит исходный код фронтенд-приложения на React.
+  - `routes/`: Содержит компоненты маршрутов для фронтенда.
+- `server.js`: Точка входа для бекенд-сервера на Node.js.
 
-## Expanding the ESLint configuration
+## Начало работы
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Поскольку это тестовое задание, фронтенд и бекенд находятся в основном каталоге проекта и используют один и тот же package.json. Поэтому для установки всех зависимостей нужно выполнить только одну команду npm install. Это упрощает процесс установки и управления зависимостями, так как все необходимые пакеты будут установлены сразу, и не нужно будет переключаться между разными директориями для установки зависимостей фронтенда и бекенда.
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+#### Фронтенд
+Запустите сервер разработки фронтенда:
+```bash
+npm install
+npm run dev
 ```
+Это запустит фронтенд на `http://localhost:5173`.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+#### Бекенд
+Запустите сервер бекенда:
+```bash
+node server.js
 ```
+Это запустит бекенд на `http://localhost:3000`.
+
+### Запуск с использованием Docker
+Убедитесь, что Docker установлен и запущен на вашем компьютере.
+### Сборка и запуск с использованием Docker
+Запустите следующую команду для сборки и запуска контейнеров:
+```bash
+docker-compose up --build
+```
+Это запустит:
+- Фронтенд на `http://localhost:5173`
+- Бекенд на `http://localhost:3000`
+
+## Дополнительная информация
+- Убедитесь, что бекенд запущен перед запуском фронтенда, так как фронтенд будет пытаться подключиться к API бекенда.
+- По любым вопросам или проблемам, пожалуйста, создайте issue в репозитории GitHub.
+
+## Лицензия
+Этот проект лицензирован по лицензии MIT.
