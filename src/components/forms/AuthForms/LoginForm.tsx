@@ -90,7 +90,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ setCurrentView, setNotification, 
       </div>
       <div className="text-center">
         <button onClick={() => setCurrentView('register')} className="text-blue-500 hover:underline">Нет аккаунта? Зарегистрироваться</button>
-        <button onClick={() => setCurrentView('forgotPassword')} className="text-blue-500 hover:underline ml-4">Забыли пароль?</button>
       </div>
     </div>
   );

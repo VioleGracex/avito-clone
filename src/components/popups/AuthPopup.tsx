@@ -3,7 +3,6 @@ import { FaTimes } from 'react-icons/fa';
 import RegisterForm from '../forms/AuthForms/RegisterForm';
 import LoginForm from '../forms/AuthForms/LoginForm';
 
-
 interface AuthPopupProps {
   onClose: () => void;
   view: 'register' | 'login' | 'forgotPassword';
@@ -36,6 +35,15 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ onClose, view, onLoginSuccess }) 
       document.removeEventListener('mousedown', handleOutsideClick);
     };
   });
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 1000); // Notification disappears after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   return (
     <div className="fixed inset-0 bg-gray-800/75 flex justify-center items-center z-50">
