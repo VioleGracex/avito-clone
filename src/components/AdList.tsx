@@ -12,6 +12,7 @@ import 'rc-slider/assets/index.css';
 
 const AdList: React.FC = () => {
   const [ads, setAds] = useState<Ad[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('');
   const [serviceType, setServiceType] = useState('');
@@ -23,7 +24,10 @@ const AdList: React.FC = () => {
   const [adsPerPage] = useState(5);
 
   useEffect(() => {
-    getAds().then((data) => setAds([...data]));
+    getAds().then((data) => {
+      setAds([...data]);
+      setLoading(false); // Set loading to false once ads are fetched
+    });
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +83,10 @@ const AdList: React.FC = () => {
   const indexOfLastAd = currentPage * adsPerPage;
   const indexOfFirstAd = indexOfLastAd - adsPerPage;
   const currentAds = filteredAds.slice(indexOfFirstAd, indexOfLastAd);
+
+  if (loading) {
+    return <div className="loading-spinner">Загрузка...</div>; // Show loading spinner or placeholder
+  }
 
   return (
     <div className="container mx-auto p-4 flex flex-col gap-4 justify-center" style={{ maxWidth: '1440px' }}>
@@ -177,7 +185,7 @@ const AdList: React.FC = () => {
             </ul>
           ) : (
             <div className="text-center">
-              <p>Здесь пока нет объявлений. Будьте первым, кто воспользуется нашими услугами.</p>
+              <p>{search || filter || serviceType || usePriceLimit ? 'Объявления с такими параметрами не найдены.' : 'Здесь пока нет объявлений. Будьте первым, кто воспользуется нашими услугами.'}</p>
               <Link to="/form" className="mt-4 bg-blue-500 text-white p-2 rounded-md inline-block">
                 + Разместить объявление
               </Link>

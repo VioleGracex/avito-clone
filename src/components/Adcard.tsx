@@ -83,7 +83,7 @@ const GridAdCard: React.FC<{ ad: Ad }> = ({ ad }) => {
       {/* Details section */}
       <div className="flex-1 flex flex-col text-left">
         <div className="flex justify-between items-center">
-          <h3 className="text-xl font-bold text-[#222222] cursor-pointer" onClick={handleClick}>
+          <h3 className="text-xl font-bold text-[#0d47a1] cursor-pointer" onClick={handleClick}>
             {ad.name && (ad.name.length > 20 ? `${ad.name.substring(0, 20)}...` : ad.name)}
           </h3>
         </div>
@@ -172,7 +172,7 @@ const ColumnAdCard: React.FC<{ ad: Ad }> = ({ ad }) => {
 
       {/* Details section */}
       <div className="flex-1 flex flex-col translate-y-[-40px] ml-4">
-        <h3 className="text-2xl font-bold text-[#222222] cursor-pointer mb-2 mt-0" onClick={handleClick}>
+        <h3 className="text-2xl font-bold text-[#0d47a1] cursor-pointer mb-2 mt-0" onClick={handleClick}>
           {ad.name && (ad.name.length > 20 ? `${ad.name.substring(0, 20)}...` : ad.name)}
         </h3>
         <p className="text-lg text-[#333333] mb-2">

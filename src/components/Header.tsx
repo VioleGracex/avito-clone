@@ -8,6 +8,7 @@ const Header: React.FC = () => {
   const [isBellDropdownOpen, setIsBellDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
   const [authView, setAuthView] = useState<'register' | 'login' | 'forgotPassword'>('login');
   const [intendedPath, setIntendedPath] = useState<string | null>(null);
@@ -19,6 +20,7 @@ const Header: React.FC = () => {
     const checkLoginStatus = async () => {
       const loggedIn = await checkIfLoggedIn();
       setIsLoggedIn(loggedIn);
+      setLoading(false); // Set loading to false once login status is determined
     };
 
     checkLoginStatus();
@@ -84,6 +86,10 @@ const Header: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return <div className="loading-spinner">Загрузка...</div>; // Show loading spinner or placeholder
+  }
+
   return (
     <>
       <header className="bg-white shadow-md p-4">
@@ -105,21 +111,23 @@ const Header: React.FC = () => {
             )}
           </div>
           <div className="flex items-center space-x-4">
-            <div className="relative" ref={bellDropdownRef}>
-              <button
-                onClick={toggleBellDropdown}
-                className="text-gray-700 hover:text-[#4357ad] flex items-center focus:outline-none"
-              >
-                <FaBell className="cursor-pointer" />
-              </button>
-              {isBellDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
-                  <div className="block px-4 py-2 text-gray-700 cursor-pointer">
-                    Нет уведомлений
+            {isLoggedIn && (
+              <div className="relative" ref={bellDropdownRef}>
+                <button
+                  onClick={toggleBellDropdown}
+                  className="text-gray-700 hover:text-[#4357ad] flex items-center focus:outline-none"
+                >
+                  <FaBell className="cursor-pointer" />
+                </button>
+                {isBellDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
+                    <div className="block px-4 py-2 text-gray-700 cursor-pointer">
+                      Нет уведомлений
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
             {isLoggedIn ? (
               <div className="relative" ref={userDropdownRef}>
                 <button

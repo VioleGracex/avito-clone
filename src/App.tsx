@@ -7,18 +7,13 @@ import Header from './components/Header';
 import MyAdsPage from './pages/MyAdsPage';
 import { checkIfLoggedIn } from './services/auth';
 
-// Function to check if the user is logged in
-const isLoggedIn = async () => {
-  return await checkIfLoggedIn();
-};
-
 const App: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const loggedIn = await isLoggedIn();
+      const loggedIn = await checkIfLoggedIn();
       setLoggedIn(loggedIn);
       setLoading(false);
     };
@@ -27,7 +22,7 @@ const App: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading-spinner">Загрузка...</div>; // Add your loading spinner or placeholder here
   }
 
   return (
