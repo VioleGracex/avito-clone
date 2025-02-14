@@ -5,7 +5,7 @@ import { Ad, ServicesAd } from '../types/Ad';
 import AdCard from './AdCard';
 import FilterPopup from './FilterPopup';
 import AdPagination from './AdPagination';
-import { FaFilter, FaTh, FaBars, FaCoins } from 'react-icons/fa';
+import { FaFilter, FaTh, FaBars, FaCoins, FaSortUp, FaSortDown } from 'react-icons/fa';
 import { filterTypes, serviceTypes } from '../constants/filterData';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -22,6 +22,7 @@ const AdList: React.FC = () => {
   const [usePriceLimit, setUsePriceLimit] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [adsPerPage] = useState(5);
+  const [sortOrder, setSortOrder] = useState<'recent' | 'oldest'>('recent');
 
   useEffect(() => {
     getAds().then((data) => {
@@ -68,17 +69,31 @@ const AdList: React.FC = () => {
     setShowFilter(false);
   };
 
+  const handleSortOrderChange = () => {
+    setSortOrder((prevOrder) => (prevOrder === 'recent' ? 'oldest' : 'recent'));
+  };
+
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const filteredAds = ads.filter((ad) => {
-    return (
-      ad.name.toLowerCase().includes(search.toLowerCase()) &&
-      (filter ? ad.type === filter : true) &&
-      (serviceType ? (ad as ServicesAd).serviceType === serviceType : true) &&
-      (!usePriceLimit || (priceRange.min ? ad.price >= Number(priceRange.min) : true)) &&
-      (!usePriceLimit || (priceRange.max ? ad.price <= Number(priceRange.max) : true))
-    );
-  });
+  const filteredAds = ads
+    .filter((ad) => {
+      return (
+        ad.name.toLowerCase().includes(search.toLowerCase()) &&
+        (filter ? ad.type === filter : true) &&
+        (serviceType ? (ad as ServicesAd).serviceType === serviceType : true) &&
+        (!usePriceLimit || (priceRange.min ? ad.price >= Number(priceRange.min) : true)) &&
+        (!usePriceLimit || (priceRange.max ? ad.price <= Number(priceRange.max) : true))
+      );
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      if (sortOrder === 'recent') {
+        return dateB - dateA;
+      } else {
+        return dateA - dateB;
+      }
+    });
 
   const indexOfLastAd = currentPage * adsPerPage;
   const indexOfFirstAd = indexOfLastAd - adsPerPage;
@@ -97,8 +112,12 @@ const AdList: React.FC = () => {
         >
           <FaFilter />
         </button>
-        {/* Контейнер для кнопок вида */}
+        {/* Контейнер для кнопок вида и сортировки */}
         <div className="flex space-x-2 ml-auto">
+          <button onClick={handleSortOrderChange} className="p-2 hover:bg-gray-300 cursor-pointer flex items-center">
+            {sortOrder === 'recent' ? <FaSortUp /> : <FaSortDown />}
+            <span className="ml-2">{sortOrder === 'recent' ? 'Сначала новые' : 'Сначала старые'}</span>
+          </button>
           <button onClick={() => setViewType('column')} className={`p-2 ${viewType === 'column' ? 'bg-gray-200' : ''} hover:bg-gray-300 cursor-pointer`}>
             <FaBars />
           </button>
