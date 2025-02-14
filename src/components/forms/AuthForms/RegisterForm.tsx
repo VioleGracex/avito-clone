@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 import { registerUser } from '../../../services/auth';
 
@@ -22,6 +22,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setCurrentView, setNotifica
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ username: '', email: '', password: '' });
+
+  const registerButtonRef = useRef<HTMLButtonElement>(null);
 
   const register = async () => {
     const newErrors = { username: '', email: '', password: '' };
@@ -60,6 +62,19 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setCurrentView, setNotifica
       }
     }
   };
+
+  const handleKeyPress = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      registerButtonRef.current?.click();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  },);
 
   return (
     <div className="p-4">
@@ -110,7 +125,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ setCurrentView, setNotifica
         {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
       </div>
       <div className="form-group mb-4">
-        <button onClick={register} className="w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Зарегистрироваться</button>
+        <button onClick={register} ref={registerButtonRef} className="w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Зарегистрироваться</button>
       </div>
       <div className="text-center">
         <button onClick={() => setCurrentView('login')} className="text-blue-500 hover:underline">Уже есть аккаунт? Войти</button>

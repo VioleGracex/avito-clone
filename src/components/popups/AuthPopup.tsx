@@ -29,10 +29,18 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ onClose, view, onLoginSuccess }) 
     }
   };
 
+  const handleKeyPress = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('keydown', handleKeyPress);
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('keydown', handleKeyPress);
     };
   });
 
@@ -40,7 +48,7 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ onClose, view, onLoginSuccess }) 
     if (notification) {
       const timer = setTimeout(() => {
         setNotification(null);
-      }, 3000); // Notification disappears after 3 seconds
+      }, 1000); // Notification disappears after 1 seconds
       return () => clearTimeout(timer);
     }
   }, [notification]);
