@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Ad } from '../types/Ad';
 import { useNavigate } from 'react-router-dom';
-import { FaHeart, FaMapMarkerAlt, FaTag, FaCoins } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaTag, FaCoins } from 'react-icons/fa';
 
 interface AdCardProps {
   ad: Ad;
@@ -86,9 +86,6 @@ const GridAdCard: React.FC<{ ad: Ad }> = ({ ad }) => {
           <h3 className="text-xl font-bold text-[#222222] cursor-pointer" onClick={handleClick}>
             {ad.name && (ad.name.length > 20 ? `${ad.name.substring(0, 20)}...` : ad.name)}
           </h3>
-          <button className="text-gray-300">
-            <FaHeart />
-          </button>
         </div>
         <p className="text-md text-[#555555] flex items-center mt-2">
           <FaCoins className="mr-1" /> {ad.price}

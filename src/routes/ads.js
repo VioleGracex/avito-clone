@@ -13,6 +13,7 @@ const ItemTypes = {
 // In-memory storage for ads
 let items = [];
 
+// Create a counter for unique item IDs
 const makeCounter = () => {
   let count = items.length; // Start the counter from the length of existing items
   return () => ++count;
@@ -25,112 +26,14 @@ router.post('/', (req, res) => {
   const { name, description, location, type, userId, ...rest } = req.body;
 
   // Validate common required fields
-  if (!name) {
-    const error = 'Отсутствует обязательное поле: имя';
-    console.error(error);
-    return res.status(400).json({ error });
-  }
-  if (!description) {
-    const error = 'Отсутствует обязательное поле: описание';
-    console.error(error);
-    return res.status(400).json({ error });
-  }
-  if (!location) {
-    const error = 'Отсутствует обязательное поле: местоположение';
-    console.error(error);
-    return res.status(400).json({ error });
-  }
-  if (!type) {
-    const error = 'Отсутствует обязательное поле: тип';
-    console.error(error);
-    return res.status(400).json({ error });
-  }
-  if (!userId) {
-    const error = 'Отсутствует обязательное поле: ID пользователя';
-    console.error(error);
-    return res.status(400).json({ error });
+  if (!name || !description || !location || !type || !userId) {
+    return res.status(400).json({ error: 'Отсутствуют обязательные поля' });
   }
 
   // Validate user ID
-  console.log(userId);
   const user = users.find(u => u.id === userId);
   if (!user) {
-    const error = 'Неверный ID пользователя';
-    console.error(error);
-    return res.status(400).json({ error });
-  }
-
-  switch (type) {
-    case ItemTypes.REAL_ESTATE:
-      if (!rest.propertyType) {
-        const error = 'Отсутствует обязательное поле для недвижимости: тип недвижимости';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.area) {
-        const error = 'Отсутствует обязательное поле для недвижимости: площадь';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.rooms) {
-        const error = 'Отсутствует обязательное поле для недвижимости: количество комнат';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.price) {
-        const error = 'Отсутствует обязательное поле для недвижимости: цена';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      break;
-    case ItemTypes.AUTO:
-      if (!rest.brand) {
-        const error = 'Отсутствует обязательное поле для авто: марка';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.model) {
-        const error = 'Отсутствует обязательное поле для авто: модель';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.year) {
-        const error = 'Отсутствует обязательное поле для авто: год';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.mileage) {
-        const error = 'Отсутствует обязательное поле для авто: пробег';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.price) {
-        const error = 'Отсутствует обязательное поле для авто: цена';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      break;
-    case ItemTypes.SERVICES:
-      if (!rest.serviceType) {
-        const error = 'Отсутствует обязательное поле для услуг: тип услуги';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.experience) {
-        const error = 'Отсутствует обязательное поле для услуг: опыт';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      if (!rest.cost) {
-        const error = 'Отсутствует обязательное поле для услуг: стоимость';
-        console.error(error);
-        return res.status(400).json({ error });
-      }
-      break;
-    default:
-      const error = 'Неверный тип';
-      console.error(error);
-      return res.status(400).json({ error });
+    return res.status(400).json({ error: 'Неверный ID пользователя' });
   }
 
   const slug = slugify(name, { lower: true });
@@ -138,9 +41,7 @@ router.post('/', (req, res) => {
   // Ensure ID is unique
   const id = itemsIdCounter();
   if (items.some(item => item.id === id)) {
-    const error = 'ID уже существует';
-    console.error(error);
-    return res.status(400).json({ error });
+    return res.status(400).json({ error: 'ID уже существует' });
   }
 
   const item = {
@@ -165,15 +66,23 @@ router.get('/', (req, res) => {
   res.json(items);
 });
 
+// Get ads by user id
+router.get('/user/:userId', (req, res) => {
+  const userAds = items.filter(item => item.userId === req.params.userId);
+  if (userAds.length > 0) {
+    res.json({ ads: userAds });
+  } else {
+    res.json({ ads: [], message: 'Объявления не найдены' });
+  }
+});
+
 // Get ad by id
 router.get('/:id', (req, res) => {
   const item = items.find(i => i.id === parseInt(req.params.id));
   if (item) {
     res.json(item);
   } else {
-    const error = 'Объявление не найдено';
-    console.error(error);
-    res.status(404).send(error);
+    res.status(404).send('Объявление не найдено');
   }
 });
 
@@ -192,9 +101,7 @@ router.put('/:id', (req, res) => {
     Object.assign(item, updateData, { updatedAt: new Date() });
     res.json(item);
   } else {
-    const error = 'Объявление не найдено';
-    console.error(error);
-    res.status(404).send(error);
+    res.status(404).send('Объявление не найдено');
   }
 });
 
@@ -217,9 +124,7 @@ router.delete('/:id', (req, res) => {
     }
     res.status(204).send();
   } else {
-    const error = 'Объявление не найдено';
-    console.error(error);
-    res.status(404).send(error);
+    res.status(404).send('Объявление не найдено');
   }
 });
 

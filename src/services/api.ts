@@ -25,5 +25,10 @@ export const updateAd = async (id: string, ad: Ad): Promise<Ad> => {
 
 export const deleteAdById = async (id: string): Promise<number> => {
   const response = await axios.delete(`${API_URL}/items/${id}`);
-  return response.status;
+  return response.status; 
+};
+
+export const getUserAds = async (userId: string): Promise<{ ads: Ad[], message?: string }> => {
+  const response = await axios.get(`${API_URL}/items/user/${userId}`);
+  return response.data;
 };

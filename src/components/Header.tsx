@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch, FaUserAlt, FaBell } from 'react-icons/fa';
+import { FaUserAlt, FaBell } from 'react-icons/fa';
 import AuthPopup from './popups/AuthPopup';
 import { checkIfLoggedIn, handleLogout } from '../services/auth';
 
 const Header: React.FC = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isBellDropdownOpen, setIsBellDropdownOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
   const [authView, setAuthView] = useState<'register' | 'login' | 'forgotPassword'>('login');
   const [intendedPath, setIntendedPath] = useState<string | null>(null);
   const navigate = useNavigate();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const bellDropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -24,8 +26,11 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
+      if (bellDropdownRef.current && !bellDropdownRef.current.contains(event.target as Node)) {
+        setIsBellDropdownOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
+        setIsUserDropdownOpen(false);
       }
     };
 
@@ -33,14 +38,16 @@ const Header: React.FC = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef]);
+  }, [bellDropdownRef, userDropdownRef]);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const toggleBellDropdown = () => {
+    setIsBellDropdownOpen(!isBellDropdownOpen);
+    setIsUserDropdownOpen(false);
   };
 
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+    setIsBellDropdownOpen(false);
   };
 
   const handleLogoutClick = () => {
@@ -81,57 +88,50 @@ const Header: React.FC = () => {
     <>
       <header className="bg-white shadow-md p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Link to="/" className="text-[#4357ad] text-2xl font-bold hover:text-[#333]">
-              Avito-Clone
+          <Link to="/" className="text-[#4357ad] text-2xl font-bold hover:text-[#333]">
+            Avito-Clone
+          </Link>
+          <div className="flex items-center space-x-8">
+            <Link to="/list" className="text-gray-700 hover:text-[#4357ad] hover:underline">
+              Список объявлений
             </Link>
-            <nav className="hidden md:flex space-x-4">
-              <Link to="/form" onClick={handleFormClick} className="text-gray-700 hover:text-[#4357ad] hover:underline">
-                Создать объявление
+            <Link to="/form" onClick={handleFormClick} className="text-gray-700 hover:text-[#4357ad] hover:underline">
+              Разместить объявление
+            </Link>
+            {isLoggedIn && (
+              <Link to="/my-ads" className="text-gray-700 hover:text-[#4357ad] hover:underline">
+                Мои объявления
               </Link>
-              <Link to="/list" className="text-gray-700 hover:text-[#4357ad] hover:underline">
-                Список объявлений
-              </Link>
-            </nav>
+            )}
           </div>
           <div className="flex items-center space-x-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Поиск..."
-                className="border rounded-full py-2 px-4 pl-10 w-full"
-              />
-              <FaSearch className="absolute left-3 top-2.5 text-gray-400" />
+            <div className="relative" ref={bellDropdownRef}>
+              <button
+                onClick={toggleBellDropdown}
+                className="text-gray-700 hover:text-[#4357ad] flex items-center focus:outline-none"
+              >
+                <FaBell className="cursor-pointer" />
+              </button>
+              {isBellDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
+                  <div className="block px-4 py-2 text-gray-700 cursor-pointer">
+                    Нет уведомлений
+                  </div>
+                </div>
+              )}
             </div>
-            <Link to="/notifications" className="text-gray-700 hover:text-[#4357ad]">
-              <FaBell />
-            </Link>
             {isLoggedIn ? (
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative" ref={userDropdownRef}>
                 <button
-                  onClick={toggleDropdown}
-                  className="text-gray-700 hover:text-[#4357ad] flex items-center"
+                  onClick={toggleUserDropdown}
+                  className="text-gray-700 hover:text-[#4357ad] flex items-center focus:outline-none"
                 >
                   <FaUserAlt className="cursor-pointer" />
                 </button>
-                {isDropdownOpen && (
+                {isUserDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:underline cursor-pointer"
-                      onClick={closeDropdown}
-                    >
-                      Профиль
-                    </Link>
-                    <Link
-                      to="/settings"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:underline cursor-pointer"
-                      onClick={closeDropdown}
-                    >
-                      Настройки
-                    </Link>
                     <button
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:underline w-full text-left cursor-pointer"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left cursor-pointer"
                       onClick={handleLogoutClick}
                     >
                       Выйти
@@ -143,13 +143,13 @@ const Header: React.FC = () => {
               <>
                 <button
                   onClick={() => openAuthPopup('register')}
-                  className="text-gray-700 hover:text-[#4357ad] hover:underline cursor-pointer"
+                  className="bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] hover:cursor-pointer focus:outline-none"
                 >
                   Регистрация
                 </button>
                 <button
                   onClick={() => openAuthPopup('login')}
-                  className="text-gray-700 hover:text-[#4357ad] hover:underline cursor-pointer"
+                  className="bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] hover:cursor-pointer focus:outline-none"
                 >
                   Войти
                 </button>
@@ -157,14 +157,6 @@ const Header: React.FC = () => {
             )}
           </div>
         </div>
-        <nav className="container mx-auto mt-4 md:hidden flex justify-center space-x-4">
-          <Link to="/form" onClick={handleFormClick} className="text-gray-700 hover:text-[#4357ad] hover:underline">
-            Создать объявление
-          </Link>
-          <Link to="/list" className="text-gray-700 hover:text-[#4357ad] hover:underline">
-            Список объявлений
-          </Link>
-        </nav>
       </header>
       {authPopupOpen && <AuthPopup onClose={closeAuthPopup} view={authView} onLoginSuccess={handleLoginSuccess} />}
     </>
