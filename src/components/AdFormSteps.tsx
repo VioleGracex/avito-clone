@@ -8,8 +8,8 @@ import ImageUpload from '../components/ImageUpload';
 interface AdFormStepsProps {
   step: number;
   setStep: (step: number) => void;
-  formData: Ad | RealEstateAd | AutoAd | ServicesAd;
-  setFormData: React.Dispatch<React.SetStateAction<Ad | RealEstateAd | AutoAd | ServicesAd>>;
+  formData: Ad;
+  setFormData: React.Dispatch<React.SetStateAction<Ad>>;
   errors: { [key: string]: string | null };
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string | null }>>;
   handleSaveDraft: () => void;
@@ -64,7 +64,7 @@ const AdFormSteps: React.FC<AdFormStepsProps> = ({ step, setStep, formData, setF
 
   useEffect(() => {
     handleSaveDraft();
-  },);
+  }, [formData, handleSaveDraft]);
 
   const validateStep1 = () => {
     let isValid = true;
@@ -163,7 +163,7 @@ const AdFormSteps: React.FC<AdFormStepsProps> = ({ step, setStep, formData, setF
             <label className="block text-gray-700">Изображения</label>
             <ImageUpload images={formData.images || []} onImagesChange={handleImageChange} />
           </div>
-          <button type="button" onClick={handleNext} className="bg-blue-500 text-white p-2 rounded-md hover:cursor-pointer">
+          <button type="button" onClick={handleNext} className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer">
             Далее
           </button>
         </div>
@@ -179,10 +179,10 @@ const AdFormSteps: React.FC<AdFormStepsProps> = ({ step, setStep, formData, setF
           {formData.type === 'Услуги' && (
             <ServicesForm formData={formData as ServicesAd} handleChange={handleChange} errors={errors} />
           )}
-          <button type="button" onClick={handleBack} className="bg-gray-500 text-white p-2 rounded-md mr-2 hover:cursor-pointer">
+          <button type="button" onClick={handleBack} className="bg-gray-500 text-white p-2 rounded-md mr-2 hover:bg-gray-600 cursor-pointer">
             Назад
           </button>
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded-md hover:cursor-pointer">
+          <button type="submit" className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer">
             {formData.id ? 'Обновить объявление' : 'Создать объявление'}
           </button>
         </div>

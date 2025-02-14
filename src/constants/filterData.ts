@@ -1,8 +1,8 @@
 export const filterTypes = [
     { value: '', label: 'Все категории' },
-    { value: 'Недвижимость', label: 'Real Estate' },
-    { value: 'Авто', label: 'Auto' },
-    { value: 'Услуги', label: 'Services' }
+    { value: 'Недвижимость', label: 'Недвижимость' },
+    { value: 'Авто', label: 'Авто' },
+    { value: 'Услуги', label: 'Услуги' }
   ];
   
   export const serviceTypes = [

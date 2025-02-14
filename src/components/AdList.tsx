@@ -92,17 +92,17 @@ const AdList: React.FC = () => {
     <div className="container mx-auto p-4 flex flex-col gap-4 justify-center" style={{ maxWidth: '1440px' }}>
       <div className="flex justify-between items-center w-full mb-4 lg:mb-0">
         <button
-          className="lg:hidden bg-blue-500 text-white p-2 rounded-full"
+          className="lg:hidden bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 cursor-pointer"
           onClick={() => setShowFilter(true)}
         >
           <FaFilter />
         </button>
         {/* Контейнер для кнопок вида */}
         <div className="flex space-x-2 ml-auto">
-          <button onClick={() => setViewType('column')} className={`p-2 ${viewType === 'column' ? 'bg-gray-200' : ''}`}>
+          <button onClick={() => setViewType('column')} className={`p-2 ${viewType === 'column' ? 'bg-gray-200' : ''} hover:bg-gray-300 cursor-pointer`}>
             <FaBars />
           </button>
-          <button onClick={() => setViewType('grid')} className={`p-2 ${viewType === 'grid' ? 'bg-gray-200' : ''}`}>
+          <button onClick={() => setViewType('grid')} className={`p-2 ${viewType === 'grid' ? 'bg-gray-200' : ''} hover:bg-gray-300 cursor-pointer`}>
             <FaTh />
           </button>
         </div>
@@ -116,14 +116,14 @@ const AdList: React.FC = () => {
             onChange={handleSearchChange}
             className="w-full p-2 border rounded-md"
           />
-          <select value={filter} onChange={handleFilterChange} className="w-full p-2 border rounded-md">
+          <select value={filter} onChange={handleFilterChange} className="w-full p-2 border rounded-md cursor-pointer">
             {filterTypes.map((type) => (
               <option key={type.value} value={type.value}>
                 {type.label}
               </option>
             ))}
           </select>
-          <select value={serviceType} onChange={handleServiceTypeChange} className="w-full p-2 border rounded-md">
+          <select value={serviceType} onChange={handleServiceTypeChange} className="w-full p-2 border rounded-md cursor-pointer">
             {serviceTypes.map((type) => (
               <option key={type.value} value={type.value}>
                 {type.label}
@@ -135,6 +135,7 @@ const AdList: React.FC = () => {
               type="checkbox"
               checked={usePriceLimit}
               onChange={handleUsePriceLimitChange}
+              className="cursor-pointer"
             />
             <label>Использовать ограничение по цене</label>
           </div>
@@ -173,6 +174,14 @@ const AdList: React.FC = () => {
               </div>
             </div>
           )}
+          <div className="flex justify-between items-center mt-4 space-x-2">
+            <button className="w-full bg-gray-500 text-white py-3 px-4 rounded-md hover:bg-gray-600 cursor-pointer" onClick={handleReset}>
+              Сбросить
+            </button>
+            <button className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 cursor-pointer" onClick={handleApply}>
+              Показать
+            </button>
+          </div>
         </div>
         <div className="w-full lg:w-3/4 flex flex-col items-center">
           {currentAds.length > 0 ? (
@@ -186,7 +195,7 @@ const AdList: React.FC = () => {
           ) : (
             <div className="text-center">
               <p>{search || filter || serviceType || usePriceLimit ? 'Объявления с такими параметрами не найдены.' : 'Здесь пока нет объявлений. Будьте первым, кто воспользуется нашими услугами.'}</p>
-              <Link to="/form" className="mt-4 bg-blue-500 text-white p-2 rounded-md inline-block">
+              <Link to="/form" className="mt-4 bg-blue-500 text-white p-2 rounded-md inline-block hover:bg-blue-600 cursor-pointer">
                 + Разместить объявление
               </Link>
             </div>

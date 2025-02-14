@@ -40,7 +40,7 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ onClose, view, onLoginSuccess }) 
     if (notification) {
       const timer = setTimeout(() => {
         setNotification(null);
-      }, 1000); // Notification disappears after 3 seconds
+      }, 3000); // Notification disappears after 3 seconds
       return () => clearTimeout(timer);
     }
   }, [notification]);
