@@ -1,14 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FaUserAlt, FaBell } from 'react-icons/fa';
+import { FaUserAlt, FaBell, FaBars } from 'react-icons/fa';
 import { handleLogout } from '../services/auth';
+import { Drawer, IconButton, List, ListItem, ListItemText } from '@mui/material';
+import { styled } from '@mui/system';
 
 interface HeaderProps {
   loggedIn: boolean;
   onLogout: () => void;
 }
 
+const StyledDrawer = styled(Drawer)({
+  '& .MuiDrawer-paper': {
+    width: '250px',
+  },
+});
+
 const Header: React.FC<HeaderProps> = ({ loggedIn, onLogout }) => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isBellDropdownOpen, setIsBellDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -60,12 +69,46 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, onLogout }) => {
   };
 
   return (
-    <header className="bg-white shadow-md p-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <header className="bg-white shadow-md p-4 w-full">
+      <div className="container mx-auto flex justify-between items-center flex-wrap">
         <Link to="/" className="text-[#4357ad] text-2xl font-bold hover:text-[#333]">
           Avito-Clone
         </Link>
-        <div className="flex items-center space-x-8">
+        <div className="md:hidden">
+          <IconButton onClick={() => setIsDrawerOpen(true)}>
+            <FaBars />
+          </IconButton>
+          <StyledDrawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+            <List>
+              <ListItem component={Link} to="/list" onClick={() => setIsDrawerOpen(false)} className="hover:bg-gray-100">
+                <ListItemText primary="Список объявлений" className="text-gray-700" />
+              </ListItem>
+              <ListItem component={Link} to="/form" onClick={(e) => { handleFormClick(e); setIsDrawerOpen(false); }} className="hover:bg-gray-100">
+                <ListItemText primary="Разместить объявление" className="text-gray-700" />
+              </ListItem>
+              {loggedIn && (
+                <ListItem component={Link} to="/my-ads" onClick={() => setIsDrawerOpen(false)} className="hover:bg-gray-100">
+                  <ListItemText primary="Мои объявления" className="text-gray-700" />
+                </ListItem>
+              )}
+              {loggedIn ? (
+                <ListItem onClick={() => { handleLogoutClick(); setIsDrawerOpen(false); }} className="hover:bg-gray-100">
+                  <ListItemText primary="Выйти" className="text-gray-700" />
+                </ListItem>
+              ) : (
+                <>
+                  <ListItem component={Link} to="/login?intendedPath=/register" onClick={() => setIsDrawerOpen(false)} className="hover:bg-gray-100">
+                    <ListItemText primary="Регистрация" className="text-gray-700 bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] focus:outline-none text-center" />
+                  </ListItem>
+                  <ListItem component={Link} to="/login" onClick={() => setIsDrawerOpen(false)} className="hover:bg-gray-100">
+                    <ListItemText primary="Войти" className="text-gray-700 bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] focus:outline-none text-center" />
+                  </ListItem>
+                </>
+              )}
+            </List>
+          </StyledDrawer>
+        </div>
+        <nav className="hidden md:flex items-center space-x-8">
           <Link to="/list" className={getLinkClassName('/list')}>
             Список объявлений
           </Link>
@@ -77,8 +120,8 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, onLogout }) => {
               Мои объявления
             </Link>
           )}
-        </div>
-        <div className="flex items-center space-x-4">
+        </nav>
+        <div className="hidden md:flex items-center space-x-4">
           {loggedIn && (
             <div className="relative" ref={bellDropdownRef}>
               <button
@@ -116,20 +159,20 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, onLogout }) => {
               )}
             </div>
           ) : (
-            <>
+            <div className="flex space-x-4">
               <Link
                 to="/login?intendedPath=/register"
-                className="bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] focus:outline-none"
+                className="bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] focus:outline-none text-center"
               >
                 Регистрация
               </Link>
               <Link
                 to="/login"
-                className="bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] focus:outline-none"
+                className="bg-[#4357ad] text-white px-4 py-2 rounded-md hover:bg-[#333] focus:outline-none text-center"
               >
                 Войти
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
