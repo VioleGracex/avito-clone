@@ -3,6 +3,7 @@ import { filterTypes, serviceTypes } from '../constants/filterData';
 import { FaTimes, FaSearch, FaFilter, FaCoins } from 'react-icons/fa';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import { motion } from 'framer-motion';
 
 interface FilterPopupProps {
   isOpen: boolean;
@@ -37,7 +38,11 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
   onReset,
   onApply
 }) => {
-  if (!isOpen) return null;
+  
+  const variants = {
+    open: { y: 0, opacity: 1 },
+    closed: { y: '100%', opacity: 0 },
+  };
 
   const handleSliderChange = (value: number | number[]) => {
     if (Array.isArray(value)) {
@@ -47,7 +52,13 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
   };
 
   return (
-    <div className={`fixed top-0 left-0 right-0 h-full z-50 bg-white shadow-md transition-transform duration-300 ease-out transform ${isOpen ? 'translate-y-0' : '-translate-y-full'}`}>
+    <motion.div 
+      initial="closed" 
+      animate={isOpen ? "open" : "closed"} 
+      variants={variants} 
+      transition={{ duration: 0.3 }} 
+      className={`fixed top-0 left-0 right-0 h-full z-50 bg-white shadow-md`}
+    >
       <div className="p-6 w-full max-h-full overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Фильтр</h2>
@@ -147,7 +158,7 @@ const FilterPopup: React.FC<FilterPopupProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

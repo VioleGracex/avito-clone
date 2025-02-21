@@ -7,6 +7,8 @@ import Header from './components/Header';
 import MyAdsPage from './pages/MyAdsPage';
 import { checkIfLoggedIn } from './services/auth';
 import AuthPopup from './components/popups/AuthPopup';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Layout: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -42,35 +44,41 @@ const Layout: React.FC = () => {
     }
   }, [location]);
 
-  if (loading) {
-    return <div className="loading-spinner">Загрузка...</div>; // Add your loading spinner or placeholder here
-  }
-
   return (
     <>
-      <Header loggedIn={loggedIn} onLogout={() => setLoggedIn(false)} />
-      <div className="App mt-2">
-        <Routes>
-          <Route path="/" element={<AdList />} />
-          <Route path="/list" element={<AdList />} />
-          <Route path="/item/:id" element={<AdPage />} />
-          <Route path="/form" element={loggedIn ? <AdForm /> : <Navigate to="/login?intendedPath=/form" />} />
-          <Route path="/form/:id" element={loggedIn ? <AdForm /> : <Navigate to={`/login?intendedPath=${encodeURIComponent(location.pathname)}`} />} />
-          <Route path="/my-ads" element={loggedIn ? <MyAdsPage /> : <Navigate to="/login?intendedPath=/my-ads" />} />
-          <Route path="/login" element={<AdList />} /> {/* Temporary route to trigger AuthPopup */}
-        </Routes>
-        {showAuthPopup && (
-          <AuthPopup
-            onClose={() => setShowAuthPopup(false)}
-            view={authView}
-            onLoginSuccess={() => {
-              setShowAuthPopup(false);
-              setLoggedIn(true);
-              navigate(intendedPath);
-            }}
-          />
-        )}
-      </div>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {!loading && (
+        <>
+          <Header loggedIn={loggedIn} onLogout={() => setLoggedIn(false)} />
+          <div className="App mt-2">
+            <Routes>
+              <Route path="/" element={<AdList />} />
+              <Route path="/list" element={<AdList />} />
+              <Route path="/item/:id" element={<AdPage />} />
+              <Route path="/form" element={loggedIn ? <AdForm /> : <Navigate to="/login?intendedPath=/form" />} />
+              <Route path="/form/:id" element={loggedIn ? <AdForm /> : <Navigate to={`/login?intendedPath=${encodeURIComponent(location.pathname)}`} />} />
+              <Route path="/my-ads" element={loggedIn ? <MyAdsPage /> : <Navigate to="/login?intendedPath=/my-ads" />} />
+              <Route path="/login" element={<AdList />} /> {/* Temporary route to trigger AuthPopup */}
+            </Routes>
+            {showAuthPopup && (
+              <AuthPopup
+                onClose={() => setShowAuthPopup(false)}
+                view={authView}
+                onLoginSuccess={() => {
+                  setShowAuthPopup(false);
+                  setLoggedIn(true);
+                  navigate(intendedPath);
+                }}
+              />
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };

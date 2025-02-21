@@ -9,6 +9,8 @@ import { FaFilter, FaTh, FaBars, FaCoins, FaSortUp, FaSortDown } from 'react-ico
 import { filterTypes, serviceTypes } from '../constants/filterData';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const AdList: React.FC = () => {
   const [ads, setAds] = useState<Ad[]>([]);
@@ -99,12 +101,14 @@ const AdList: React.FC = () => {
   const indexOfFirstAd = indexOfLastAd - adsPerPage;
   const currentAds = filteredAds.slice(indexOfFirstAd, indexOfLastAd);
 
-  if (loading) {
-    return <div className="loading-spinner">Загрузка...</div>; // Show loading spinner or placeholder
-  }
-
   return (
     <div className="container mx-auto p-4 flex flex-col gap-4 justify-center" style={{ maxWidth: '1440px' }}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div className="flex justify-between items-center w-full mb-4 lg:mb-0">
         <button
           className="lg:hidden bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 cursor-pointer"
